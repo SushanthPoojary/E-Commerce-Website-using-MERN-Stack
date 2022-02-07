@@ -1,11 +1,17 @@
 import { Add, Remove } from "@material-ui/icons";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
 import UsefulLInks from "../components/UsefulLinks";
+import { publicRequest } from "../requestMethods";
 import { mobile } from "../responsive";
+import { addProduct } from "../features/cartRedux";
+import { useDispatch } from "react-redux";
 
 const Container = styled.div`
 
@@ -121,6 +127,40 @@ const Desc = styled.p`
 `;
 
 const Product = () => {
+    const location = useLocation();
+    const id = location.pathname.split("/")[2];
+    const [product, setProduct] = useState({});
+    const [quantity, setQuantity] = useState(1);
+    const [color, setColor] = useState("");
+    const [size, setSize] = useState("");
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const getProduct = async () => {
+            try {
+                const res = await publicRequest.get(`/products/find/${id}`)
+                setProduct(res.data)
+            } catch(err) {
+
+            }
+        }
+        getProduct();
+    }, [id]);
+
+    const handleQuantity = (type) => {
+        if (type === "inc") {
+            setQuantity(quantity + 1);
+        } else {
+            quantity > 1 && setQuantity(quantity - 1);
+        }
+    };
+
+    const handleClick = () => {
+        dispatch(
+            addProduct({ ...product, quantity, color, size })    
+        )
+    };
+
     return (
         <Container>
             <UsefulLInks />
@@ -128,40 +168,36 @@ const Product = () => {
             <Announcement />
             <Wrapper>
                 <ImageContainer>
-                    <Image src="https://www.dhresource.com/0x0/f2/albu/g8/M00/95/77/rBVaV16iUVOAHSVmAAOVGO3JAqk036.jpg/2020-new-spring-casual-checked-shirt-men.jpg" />
+                    <Image src={product.img} />
                 </ImageContainer>
                 <InfoContainer>
-                    <Title>Casual Shirt</Title>
-                    <Price>₹520</Price>
+                    <Title>{product.title}</Title>
+                    <Price>₹{product.price}</Price>
                     <FilterContainer>
-                        <Select>
-                            <Option hidden selected>Color</Option>
-                            <Option>Black</Option>
-                            <Option>White</Option>
-                            <Option>Blue</Option>
-                            <Option>Red</Option>
-                            <Option>Green</Option>
-                            <Option>Yellow</Option>
+                        <Select onChange={(e)=>setColor(e.target.value)}>
+                            <Option value="Color" hidden>Color</Option>
+                            {product.color?.map((e) => (
+                                <Option key={e}>{e}</Option>
+                            ))}
+                            
+                            
                         </Select>
-                        <Select>
-                            <Option hidden selected>Size</Option>
-                            <Option>XS</Option>
-                            <Option>S</Option>
-                            <Option>M</Option>
-                            <Option>L</Option>
-                            <Option>XL</Option>
-                            <Option>XXL</Option>
+                        <Select onChange={(e)=>setSize(e.target.value)}>
+                            <Option value="Size" hidden>Size</Option>
+                            {product.size?.map((e) => (
+                                <Option key={e}>{e}</Option>
+                            ))}
                         </Select>
                     </FilterContainer>
                     <AddContainer>
                         <QuantityContainer>
-                            <Remove style={{cursor: "pointer"}} />
-                            <Quantity>1</Quantity>
-                            <Add style={{cursor: "pointer"}} />
+                            <Remove style={{cursor: "pointer"}} onClick={() => handleQuantity("dec")} />
+                            <Quantity>{quantity}</Quantity>
+                            <Add style={{cursor: "pointer"}} onClick={() => handleQuantity("inc")} />
                         </QuantityContainer>
-                        <Button>ADD TO CART</Button>
+                        <Button onClick={handleClick}>ADD TO CART</Button>
                     </AddContainer>
-                    <Desc>Navy blue and green checked casual shirt, has a spread collar, long sleeves, button placket, curved hem, and 1 patch pocket</Desc>
+                    <Desc>{product.desc}</Desc>
                 </InfoContainer>
             </Wrapper>
             <Newsletter />

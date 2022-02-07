@@ -27,7 +27,7 @@ const InputContainer = styled.div`
     background-color: white;
     display: flex;
     justify-content: space-between;
-    border: 1px solid #000000;
+    /* border: 1px solid #000000; */
     ${mobile({width: "80%"})}
 `
 

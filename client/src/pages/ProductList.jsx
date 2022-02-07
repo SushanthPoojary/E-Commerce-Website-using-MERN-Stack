@@ -76,7 +76,7 @@ const ProductList = () => {
             <ProductContainer>
                 <Navbar />
                 <Announcement />
-                <Title>Clothing</Title>
+                <Title>{cat}</Title>
                 <FilterContainer>
                     <Filter>
                         <Select name="color" onChange={handleFilter}>

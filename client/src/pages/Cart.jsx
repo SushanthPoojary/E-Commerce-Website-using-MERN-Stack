@@ -5,6 +5,7 @@ import UsefulLinks from "../components/UsefulLinks"
 import Footer from "../components/Footer";
 import { Add, Remove } from "@material-ui/icons";
 import { mobile } from "../responsive";
+import { useSelector } from "react-redux";
 
 const Container = styled.div``;
 
@@ -176,6 +177,7 @@ const SummaryButton = styled.button`
 `;
 
 const Cart = () => {
+    const cart = useSelector(state => state.cart)
     return (
         <Container>
             <UsefulLinks />
@@ -190,50 +192,35 @@ const Cart = () => {
                 </Top>
                 <Bottom>
                     <Info>
+                        {cart.products.map(product => (
+
                         <Product>
                             <ProductDetails>
-                                <ProductImage src="https://www.dhresource.com/0x0/f2/albu/g8/M00/95/77/rBVaV16iUVOAHSVmAAOVGO3JAqk036.jpg/2020-new-spring-casual-checked-shirt-men.jpg" />
+                                <ProductImage src={product.img} />
                                 <Details>
-                                    <ProductName>Casual Shirt</ProductName>
-                                    <ProductId><strong>ID: </strong>86905432163</ProductId>
+                                    <ProductName>{product.title}</ProductName>
+                                    <ProductId><strong>ID: </strong>{product._id}</ProductId>
                                     <ProductContainer>
-                                        <ProductColor color="blue" />
-                                        <ProductSize><strong>Size: </strong>M</ProductSize>
+                                        <ProductColor color={product.color} />
+                                        <ProductSize><strong>Size: </strong>{product.size}</ProductSize>
                                     </ProductContainer>
                                     <ProductAmountContainer>
                                         <Remove />
-                                        <ProductAmount>2</ProductAmount>
+                                        <ProductAmount>{product.quantity}</ProductAmount>
                                         <Add />
                                     </ProductAmountContainer>
                                 </Details>
                             </ProductDetails>
-                            <ProductPrice>₹499</ProductPrice>
+                            <ProductPrice>₹{product.price * product.quantity}</ProductPrice>
                         </Product>
-                        <Product>
-                            <ProductDetails>
-                                <ProductImage src="https://www.dhresource.com/0x0/f2/albu/g8/M00/95/77/rBVaV16iUVOAHSVmAAOVGO3JAqk036.jpg/2020-new-spring-casual-checked-shirt-men.jpg" />
-                                <Details>
-                                    <ProductName>Casual Shirt</ProductName>
-                                    <ProductId><strong>ID: </strong>86905432163</ProductId>
-                                    <ProductContainer>
-                                        <ProductColor color="blue" />
-                                        <ProductSize><strong>Size: </strong>M</ProductSize>
-                                    </ProductContainer>
-                                    <ProductAmountContainer>
-                                        <Remove />
-                                        <ProductAmount>2</ProductAmount>
-                                        <Add />
-                                    </ProductAmountContainer>
-                                </Details>
-                            </ProductDetails>
-                            <ProductPrice>₹499</ProductPrice>
-                        </Product>
+                        ))}
+                        
                     </Info>
                     <Summary>
                         <SummaryTitle>ORDER SUMMARY</SummaryTitle>
                         <SummaryItem>
                             <SummaryItemText>Bag Total</SummaryItemText>
-                            <SummaryItemPrice>₹499</SummaryItemPrice>
+                            <SummaryItemPrice>₹{cart.total}</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryItem>
                             <SummaryItemText>Shipping Charges</SummaryItemText>
@@ -245,7 +232,7 @@ const Cart = () => {
                         </SummaryItem>
                         <SummaryItem type="total">
                             <SummaryItemText>Total Payable</SummaryItemText>
-                            <SummaryItemPrice>₹499</SummaryItemPrice>
+                            <SummaryItemPrice>₹{cart.total}</SummaryItemPrice>
                         </SummaryItem>
                         <SummaryButton>CHECKOUT</SummaryButton>
                     </Summary>
