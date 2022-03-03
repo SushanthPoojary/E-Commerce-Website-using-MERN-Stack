@@ -10,10 +10,13 @@ import {
   Route,
   Navigate
 } from "react-router-dom";
+import Success from "./pages/Success";
+import { useSelector } from "react-redux";
+import Cancel from "./pages/Cancel";
 
 
 const App = () => {
-  let user = true;
+  const user = useSelector(state => state.user.currentUser);
   return (
     <BrowserRouter>
       <Routes>
@@ -23,6 +26,8 @@ const App = () => {
           <Route path=":id" element={<Product />} />
         </Route>
         <Route path="/cart" element={<Cart />} />
+        <Route path="/success" element={<Success />} />
+        <Route path="/cancel" element={<Cancel />} />
         <Route path="/signup" element={user ? <Navigate to="/" /> : <Signup />} />
         <Route path="/login" element={user ? <Navigate to="/" /> : <Login/>} />
       </Routes>

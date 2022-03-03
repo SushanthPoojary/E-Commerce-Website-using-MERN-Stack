@@ -8,6 +8,8 @@ const userRoute = require("./routes/user");
 const productRoute = require("./routes/product");
 const cartRoute = require("./routes/cart");
 const orderRoute = require("./routes/order");
+const createCheckoutSession = require("./routes/checkout");
+const session = require("./routes/sessionData");
 
 const app = express();
 
@@ -26,6 +28,8 @@ app.use("/api/auth", authRoute);
 app.use("/api/products", productRoute);
 app.use("/api/carts", cartRoute);
 app.use("/api/orders", orderRoute);
+app.post("/api/create-checkout-session", createCheckoutSession);
+app.post("/api/session", session);
 
 
 
