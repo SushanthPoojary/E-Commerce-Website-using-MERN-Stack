@@ -1,15 +1,39 @@
 import "./featuredInfo.css";
 import { ArrowDownward, ArrowUpward } from "@material-ui/icons";
+import { useEffect, useState } from "react";
+import { userRequest } from "../../requestMethods";
 
 export default function FeaturedInfo() {
+
+  const [income, setIncome] = useState([]);
+  const [percentage, setPercentage] = useState(0);
+
+  useEffect(() => {
+
+    const getIncome = async () => {
+      try {
+      const res = await userRequest.get("/orders/income");
+      console.log(res);
+      setIncome(res.data);
+      setPercentage((res.data[1].total * 100) / res.data[0].total - 100);
+    } catch (err) {
+      console.log(err);
+    }
+    };
+    getIncome();
+  }, [])
+
+  console.log(income);
+  console.log(percentage)
+
   return (
     <div className="featured">
       <div className="featuredItem">
         <span className="featuredTitle">Revanue</span>
         <div className="featuredMoneyContainer">
-          <span className="featuredMoney">₹2,415</span>
+          <span className="featuredMoney">₹{income[1].total}</span>
           <span className="featuredMoneyRate">
-            -11.4 <ArrowDownward  className="featuredIcon negative"/>
+            {Math.floor(percentage)}% {percentage < 0 ? ( <ArrowDownward  className="featuredIcon negative"/> ) : ( <ArrowUpward className="featuredIcon"/> ) }
           </span>
         </div>
         <span className="featuredSub">Compared to last month</span>
@@ -27,7 +51,7 @@ export default function FeaturedInfo() {
       <div className="featuredItem">
         <span className="featuredTitle">Cost</span>
         <div className="featuredMoneyContainer">
-          <span className="featuredMoney">₹2,225</span>
+          <span className="featuredMoney">{income[1].total - income[0].total}</span>
           <span className="featuredMoneyRate">
             +2.4 <ArrowUpward className="featuredIcon"/>
           </span>
